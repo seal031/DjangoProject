@@ -2,18 +2,18 @@
   <div class="home">
     <el-row display="margin-top:10px">
         <el-input v-model="input" placeholder="请输入书名" style="display:inline-table; width: 30%; float:left"></el-input>
-        <el-button type="primary" @click="addBook()" style="float:left; margin: 2px;">新增</el-button>
+        <el-button type="primary" @click="addQuestion()" style="float:left; margin: 2px;">新增</el-button>
     </el-row>
     <el-row>
-        <el-table :data="bookList" style="width: 100%" border>
+        <el-table :data="QuestionList" style="width: 100%" border>
           <el-table-column prop="id" label="编号" min-width="100">
             <template scope="scope"> {{ scope.row.pk }} </template>
           </el-table-column>
-          <el-table-column prop="book_name" label="书名" min-width="100">
-            <template scope="scope"> {{ scope.row.fields.book_name }} </template>
+          <el-table-column prop="question_text" label="问题名称" min-width="100">
+            <template scope="scope"> {{ scope.row.fields.question_text }} </template>
           </el-table-column>
-          <el-table-column prop="add_time" label="添加时间" min-width="100">
-            <template scope="scope"> {{ scope.row.fields.add_time }} </template>
+          <el-table-column prop="pub_date" label="添加时间" min-width="100">
+            <template scope="scope"> {{ scope.row.fields.pub_date }} </template>
           </el-table-column>
         </el-table>
     </el-row>
@@ -26,32 +26,32 @@ export default {
   data () {
     return {
       input: '',
-      bookList: [],
+      QuestionList: [],
     }
   },
   mounted: function() {
-      this.showBooks()
+      this.showQuestions()
   },
   methods: {
-    addBook(){
+    addQuestion(){
       this.$http.get('http://127.0.0.1:8000/api/add_book?book_name=' + this.input)
         .then((response) => {
             var res = JSON.parse(response.bodyText)
             if (res.error_num == 0) {
-              this.showBooks()
+              this.showQuestions()
             } else {
               this.$message.error('新增书籍失败，请重试')
               console.log(res['msg'])
             }
         })
     },
-    showBooks(){
-      this.$http.get('http://127.0.0.1:8000/api/show_books')
+    showQuestions(){
+      this.$http.get('http://127.0.0.1:8000/polls')
         .then((response) => {
             var res = JSON.parse(response.bodyText)
             console.log(res)
             if (res.error_num == 0) {
-              this.bookList = res['list']
+              this.QuestionList = res['list']
             } else {
               this.$message.error('查询书籍失败')
               console.log(res['msg'])
